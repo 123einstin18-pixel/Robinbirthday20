@@ -62,6 +62,21 @@ h1,h2{font-family:Caveat,"Segoe Script","Bradley Hand",cursive;font-weight:700;l
 main.top{padding-bottom:20px}
 main.after{padding-top:70px}
 
+/* envelope */
+.envwrap{position:relative;z-index:2;text-align:center;padding:230px 24px 60px}
+.env{position:relative;width:min(86vw,420px);aspect-ratio:7/5;margin:0 auto;cursor:pointer;perspective:1000px}
+.env-back{position:absolute;inset:0;background:#a82c40;border-radius:6px;box-shadow:0 14px 40px rgba(0,0,0,.55)}
+.env-letter{position:absolute;left:6%;right:6%;top:6%;height:88%;z-index:2;background:#fbf7ee;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#2b2b2b;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,.3);transition:transform .9s ease .45s;pointer-events:none}
+.env-letter span{font-family:Caveat,cursive;font-size:2.2rem;font-weight:700}
+.env-letter small{font-style:italic;color:#777}
+.env-front{position:absolute;inset:0;z-index:3;background:#d9475b;clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);pointer-events:none}
+.env-flap{position:absolute;left:0;right:0;top:0;height:55%;z-index:4;background:#bd3548;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease,z-index 0s .3s;pointer-events:none}
+.env.open .env-flap{transform:rotateX(180deg);z-index:1}
+.env.open .env-letter{transform:translateY(-62%);pointer-events:auto}
+.envhint{font-family:Caveat,cursive;font-size:2rem;color:var(--mist);margin-top:34px}
+
+
+  
 /* moments */
 h2{font-size:2.6rem;color:var(--glow);margin-bottom:26px}
 .timeline{position:relative;padding-left:34px;margin-bottom:76px}
@@ -106,6 +121,16 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
   <div class="texts" id="texts"></div>
 </section>
 
+<section class="envwrap">
+  <div class="env" id="env">
+    <div class="env-back"></div>
+    <a class="env-letter" href="letter.pdf" target="_blank" rel="noopener"><span>A letter for you</span><small>Tap to read</small></a>
+    <div class="env-front"></div>
+    <div class="env-flap"></div>
+  </div>
+  <p class="envhint" id="envHint">Tap the envelope</p>
+</section>
+  
 <main class="after">
   <section>
     <h2>Our little story</h2>
@@ -196,6 +221,12 @@ function layout() {
 }
 addEventListener("scroll", layout, { passive: true }); addEventListener("resize", layout); layout();
 
+// envelope
+const env = document.getElementById("env"), envHint = document.getElementById("envHint");
+env.addEventListener("click", () => {
+  if (!env.classList.contains("open")) { env.classList.add("open"); envHint.textContent = "Tap the letter to read it"; }
+});
+  
 // snow
 const cv = document.getElementById("snow"), cx = cv.getContext("2d");
 let W, H, flakes = [];
