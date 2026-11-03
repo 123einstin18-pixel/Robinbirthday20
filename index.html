@@ -63,6 +63,30 @@ h1,h2{font-family:Caveat,"Segoe Script","Bradley Hand",cursive;font-weight:700;l
 main.top{padding-bottom:20px}
 main.after{padding-top:70px}
 
+/* confetti, poppers, slate decor */
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:7}
+.popper{position:fixed;z-index:6;left:0;top:0;line-height:1;pointer-events:none;opacity:0;transform-origin:50% 100%}
+.popper span{display:block}
+.popper.r span{transform:scaleX(-1)}
+.popper.pop{animation:popk .35s ease}
+@keyframes popk{50%{transform:scale(1.3)}}
+.photo{container-type:inline-size}
+.deco{position:absolute;inset:0;pointer-events:none}
+.bulbs{position:absolute;top:1.6cqw;left:4%;right:4%;display:flex;justify-content:space-between}
+.bulbs::before{content:"";position:absolute;left:0;right:0;top:-.2cqw;border-top:1px solid rgba(255,255,255,.18)}
+.bulbs i{width:1.5cqw;height:2cqw;margin-top:.4cqw;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:tw 2.8s ease-in-out infinite}
+.bulbs i:nth-child(4n+1){background:var(--red);box-shadow:0 0 1.4cqw .5cqw rgba(224,72,91,.55)}
+.bulbs i:nth-child(4n+2){background:var(--glow);box-shadow:0 0 1.4cqw .5cqw rgba(255,217,138,.55);animation-delay:.7s}
+.bulbs i:nth-child(4n+3){background:var(--green);box-shadow:0 0 1.4cqw .5cqw rgba(95,185,138,.5);animation-delay:1.4s}
+.bulbs i:nth-child(4n){background:#8fb8ff;box-shadow:0 0 1.4cqw .5cqw rgba(143,184,255,.5);animation-delay:2.1s}
+.balloon{position:absolute;bottom:11cqw;width:7cqw;height:8.6cqw;border-radius:50% 50% 48% 48%/56% 56% 44% 44%;animation:bob 4s ease-in-out infinite;box-shadow:inset -.8cqw -.8cqw 1.4cqw rgba(0,0,0,.18),inset .8cqw .8cqw 1.2cqw rgba(255,255,255,.25)}
+.balloon::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:14cqw;background:rgba(255,255,255,.35)}
+.b1{left:3%;background:#e0485b}
+.b2{left:10%;bottom:14cqw;background:#ffd98a;animation-delay:.8s}
+.b3{right:3%;background:#5fb98a;animation-delay:.4s}
+.b4{right:10%;bottom:14cqw;background:#8fb8ff;animation-delay:1.2s}
+@keyframes bob{50%{transform:translateY(-1.2cqw)}}
+  
 /* envelope */
 .envwrap{position:relative;z-index:2;text-align:center;padding:0 0 4vh;display:flex;flex-direction:column;align-items:center}
 .tb:nth-child(3){min-height:auto;padding-top:2vh}
@@ -105,6 +129,9 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
 
 <canvas id="snow"></canvas>
 <div class="lights" id="lights" aria-hidden="true"></div>
+<canvas id="confetti"></canvas>
+<div class="popper l" id="popL"><span>🎉</span></div>
+<div class="popper r" id="popR"><span>🎉</span></div>
 
 <div id="cover">
   <p id="coverLine"></p>
@@ -120,7 +147,7 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
 </main>
 
 <section class="story" id="story">
-  <div class="stage"><div class="photo" id="photo">your photo here</div></div>
+  <div class="stage"><div class="photo" id="photo"><span id="phText">your photo here</span><div class="deco"><div class="bulbs" id="bulbs"></div><i class="balloon b1"></i><i class="balloon b2"></i><i class="balloon b3"></i><i class="balloon b4"></i></div></div></div>
   <div class="texts" id="texts"></div>
 </section>
 
@@ -208,13 +235,60 @@ toggle.addEventListener("click", () => {
 
 // photo + story text
 const ph = document.getElementById("photo"), story = document.getElementById("story");
-if (GIFT.photo) { const im = document.createElement("img"); im.src = GIFT.photo; im.alt = ""; ph.textContent = ""; ph.append(im); }
+if (GIFT.photo) { const im = document.createElement("img"); im.src = GIFT.photo; im.alt = ""; document.getElementById("phText").remove(); ph.prepend(im); }
 GIFT.story.forEach(m => {
   const d = document.createElement("div"); d.className = "tb";
   const h = document.createElement("h3"); h.textContent = m.title;
   const p = document.createElement("p"); p.textContent = m.text;
   d.append(h, p); document.getElementById("texts").append(d);
 });
+// bulbs on the photo slate
+const bulbs = document.getElementById("bulbs");
+for (let i = 0; i < 14; i++) bulbs.appendChild(document.createElement("i"));
+
+// poppers + confetti
+const cf = document.getElementById("confetti"), cc = cf.getContext("2d");
+const popL = document.getElementById("popL"), popR = document.getElementById("popR");
+let parts = [], fired = false, running = false;
+const COLS = ["#e0485b", "#ffd98a", "#5fb98a", "#8fb8ff", "#ffffff", "#ff9ecb"];
+function cfSize() { cf.width = innerWidth; cf.height = innerHeight; }
+addEventListener("resize", cfSize); cfSize();
+function burst(xl, xr, y) {
+  for (let i = 0; i < 80; i++) {
+    const a = (Math.PI / 180) * (25 + Math.random() * 55), sp = 9 + Math.random() * 13;
+    const vx = Math.cos(a) * sp, vy = -Math.sin(a) * sp, size = 5 + Math.random() * 6;
+    const col = COLS[i % COLS.length], vr = (Math.random() - .5) * .4, rot = Math.random() * 6;
+    parts.push({ x: xl, y, vx, vy, size, col, vr, rot });
+    parts.push({ x: xr, y, vx: -vx, vy, size, col, vr: -vr, rot: -rot });
+  }
+  if (!running) { running = true; requestAnimationFrame(tick); }
+}
+function tick() {
+  cc.clearRect(0, 0, cf.width, cf.height);
+  parts = parts.filter(p => p.y < cf.height + 20);
+  for (const p of parts) {
+    p.vy += .32; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+    cc.save(); cc.translate(p.x, p.y); cc.rotate(p.rot); cc.fillStyle = p.col;
+    cc.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2); cc.restore();
+  }
+  if (parts.length) requestAnimationFrame(tick); else running = false;
+}
+function party(r, t, w0, l0, vw, vh) {
+  const size = Math.max(30, Math.min(64, l0 - 6)), h0 = w0 * .8;
+  const top = Math.max(0, r.top) + vh / 2 + h0 / 2 - size;
+  const xl = Math.max(2, l0 - size - 4), xr = vw - xl - size;
+  const op = r.top > vh * .9 ? 0 : Math.max(0, 1 - t * 4);
+  for (const [el, x] of [[popL, xl], [popR, xr]]) {
+    el.style.left = x + "px"; el.style.top = top + "px"; el.style.fontSize = size + "px"; el.style.opacity = op;
+  }
+  if (!fired && r.top <= vh * .12 && t < .3) {
+    fired = true;
+    popL.classList.remove("pop"); popR.classList.remove("pop"); void popL.offsetWidth;
+    popL.classList.add("pop"); popR.classList.add("pop");
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) burst(xl + size * .85, xr + size * .15, top + size * .2);
+  }
+  if (r.top > vh * .6) fired = false;
+}
 function layout() {
   const vw = innerWidth, vh = innerHeight, r = story.getBoundingClientRect();
   let t = Math.min(1, Math.max(0, -r.top / (vh * .85)));
@@ -222,6 +296,7 @@ function layout() {
   const w0 = Math.min(vw * .82, vh * .8 * 1.25), w1 = vw * .44, l0 = (vw - w0) / 2, l1 = vw * .04;
   ph.style.width = (w0 + (w1 - w0) * t) + "px";
   ph.style.left = (l0 + (l1 - l0) * t) + "px";
+  party(r, t, w0, l0, vw, vh);
 }
 addEventListener("scroll", layout, { passive: true }); addEventListener("resize", layout); layout();
 
