@@ -180,10 +180,7 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
   </div>
 </section>
 <main class="after">
-  <section>
-    <h2>Our little story</h2>
-    <div class="timeline" id="timeline"></div>
-  </section>
+ 
 
   <section>
     <h2>For you</h2>
@@ -212,11 +209,8 @@ const GIFT = {
     { title: "These are the places we will visit on your birthday", text: "Write something else you want him to read. Placeholder text for now." },
     { title: "One last heading", text: "A final few lines before the photo scrolls away." }
   ],
-  moments: [
-    { title: "The day we met",   text: "Write a line or two about how it all started." },
-    { title: "Our first call",   text: "Write what you remember about it." },
-    { title: "My favourite memory", text: "Write the moment that still makes you smile." }
-  ],
+  
+    
   message: "Happy birthday, my love.\n\nWrite your message to him here. Say what he means to you, what you miss, and what you are looking forward to doing together.\n\nOne day the distance will be gone.",
 };
 /* ============ END OF EDIT PART ============ */
@@ -226,13 +220,7 @@ document.getElementById("name").textContent = GIFT.name;
 document.getElementById("from").textContent = "Yours, " + GIFT.from;
 document.getElementById("message").textContent = GIFT.message;
 document.getElementById("coverLine").textContent = GIFT.coverLine;
-const tl = document.getElementById("timeline");
-GIFT.moments.forEach(m => {
-  const d = document.createElement("div"); d.className = "moment";
-  const h = document.createElement("h3"); h.textContent = m.title;
-  const p = document.createElement("p"); p.textContent = m.text;
-  d.append(h, p); tl.append(d);
-});
+
 
 // string lights
 const L = document.getElementById("lights");
