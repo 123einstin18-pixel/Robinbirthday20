@@ -64,7 +64,9 @@ main.top{padding-bottom:20px}
 main.after{padding-top:70px}
 
 /* envelope */
-.envwrap{position:relative;z-index:2;text-align:center;padding:0 0 18vh;display:flex;flex-direction:column;align-items:center}
+.envwrap{position:relative;z-index:2;text-align:center;padding:0 0 4vh;display:flex;flex-direction:column;align-items:center}
+.tb:nth-child(3){min-height:auto;padding-top:2vh}
+.closebtn{margin-top:14px;font-family:Caveat,cursive;font-size:1.5rem;color:var(--snow);background:rgba(11,22,51,.85);border:1px solid rgba(255,217,138,.5);border-radius:999px;padding:6px 22px;cursor:pointer}
 .env{position:relative;width:100%;max-width:380px;aspect-ratio:7/5;margin:0 auto;cursor:pointer;perspective:1000px}
 .env-back{position:absolute;inset:0;background:#a82c40;border-radius:6px;box-shadow:0 14px 40px rgba(0,0,0,.55)}
 .env-letter{position:absolute;left:6%;right:6%;top:6%;height:88%;z-index:2;background:#fbf7ee;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#2b2b2b;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,.3);transition:transform .9s ease .45s;pointer-events:none}
@@ -130,6 +132,7 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
     <div class="env-flap"></div>
   </div>
   <p class="envhint" id="envHint">Tap the envelope</p>
+  <button class="closebtn" id="closeEnv" type="button" hidden>Close letter</button>
 </section>
   
 <main class="after">
@@ -226,8 +229,12 @@ addEventListener("scroll", layout, { passive: true }); addEventListener("resize"
 const tx = document.getElementById("texts");
 tx.insertBefore(document.querySelector(".envwrap"), tx.children[1]);
 const env = document.getElementById("env"), envHint = document.getElementById("envHint");
+const closeEnv = document.getElementById("closeEnv");
 env.addEventListener("click", () => {
-  if (!env.classList.contains("open")) { env.classList.add("open"); envHint.textContent = "Tap the letter to read it"; }
+  if (!env.classList.contains("open")) { env.classList.add("open"); envHint.textContent = "Tap the letter to read it"; closeEnv.hidden = false; }
+});
+closeEnv.addEventListener("click", () => {
+  env.classList.remove("open"); envHint.textContent = "Tap the envelope"; closeEnv.hidden = true;
 });
   
 // snow
