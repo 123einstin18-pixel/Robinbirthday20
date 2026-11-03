@@ -112,6 +112,15 @@ main.after{padding-top:70px}
 .env.open .env-letter{transform:translateY(-62%);pointer-events:auto}
 .envhint{font-family:Caveat,cursive;font-size:2rem;color:var(--mist);margin-top:34px}
 
+/* yes / no */
+.tb.rsvpblock{min-height:auto;padding:2vh 0 4vh}
+.rsvp{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.rsvp button{font-family:Caveat,cursive;font-size:1.7rem;font-weight:700;border-radius:999px;padding:6px 28px;cursor:pointer;border:1px solid rgba(255,217,138,.6)}
+#yesBtn{background:var(--glow);color:var(--night);border-color:var(--glow);box-shadow:0 0 18px rgba(255,217,138,.45)}
+#noBtn{background:rgba(11,22,51,.85);color:var(--snow)}
+.rsvp button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#rsvpMsg{font-family:Caveat,cursive;font-size:1.8rem;color:var(--glow);line-height:1.2}
+#rsvpMsg a{color:var(--glow);text-decoration:underline}
 
   
 /* moments */
@@ -211,7 +220,7 @@ const GIFT = {
   ],
   
     
-  message: "Happy birthday, my love.\n\nI will meet you very very soon. We will buy lots of new things. We will explore new places and we will eat new food. I hope we can get time to visit some very cold place upnorth. I think It should be finland or something to get expirience of snow and cold. Thank you for sticking by me and supporting me.\n\nOne day the distance will be gone.",
+  message: "Happy birthday, my love.\n\nI will meet you very very soon. We will buy lots of new things. We will explore new places and we will eat new food. I hope we can get time to visit some very cold place upnorth. I think It should be finland or something to get experience of snow and cold. Thank you for sticking by me and supporting me.\n\nOne day the distance will be gone.",
 };
 /* ============ END OF EDIT PART ============ */
 
@@ -234,8 +243,8 @@ document.getElementById("openBtn").addEventListener("click", () => {
   song.play().then(() => { toggle.hidden = false; }).catch(() => { toggle.hidden = false; toggle.textContent = "Play the song"; });
 });
 toggle.addEventListener("click", () => {
-  if (song.paused) { song.play(); toggle.textContent = "Pause our song"; }
-  else { song.pause(); toggle.textContent = "Play our song"; }
+  if (song.paused) { song.play(); toggle.textContent = "Pause the song"; }
+  else { song.pause(); toggle.textContent = "Play the song"; }
 });
 
 // photo + story text
@@ -247,6 +256,28 @@ GIFT.story.forEach(m => {
   const p = document.createElement("p"); p.textContent = m.text;
   d.append(h, p); document.getElementById("texts").append(d);
 });
+
+// yes / no under the "places" text
+const MEET_LINK = "PASTE_YOUR_GOOGLE_MEET_LINK_HERE";
+const rsvpBlock = document.querySelectorAll("#texts .tb")[1];
+rsvpBlock.classList.add("rsvpblock");
+rsvpBlock.insertAdjacentHTML("beforeend",
+  '<div class="rsvp" id="rsvp"><button id="yesBtn" type="button">Yes 💕</button><button id="noBtn" type="button">No</button></div>');
+const rsvp = document.getElementById("rsvp");
+let asked = false;
+rsvp.addEventListener("click", e => {
+  if (e.target.id === "yesBtn") {
+    rsvp.innerHTML = '<span id="rsvpMsg">Yay! <a href="' + MEET_LINK + '" target="_blank" rel="noopener">Here you go</a></span>';
+  } else if (e.target.id === "noBtn") {
+    if (!asked) {
+      asked = true;
+      rsvp.innerHTML = '<span id="rsvpMsg">Are you sure?</span><button id="yesBtn" type="button">Actually, yes 💕</button><button id="noBtn" type="button">Yes, I\'m sure</button>';
+    } else {
+      rsvp.innerHTML = '<span id="rsvpMsg">Okay 🙂</span>';
+    }
+  }
+});
+  
 // bulbs on the photo slate
 const bulbs = document.getElementById("bulbs");
 for (let i = 0; i < 14; i++) bulbs.appendChild(document.createElement("i"));
