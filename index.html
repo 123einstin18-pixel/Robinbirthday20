@@ -193,7 +193,7 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
   <footer>Happy 20th birthday my love<33</footer>
 </main>
 
-<button id="toggle" type="button" hidden>Pause our song</button>
+<button id="toggle" type="button" hidden>Pause the song</button>
 <audio id="song" src="last-christmas.mp3" loop preload="auto"></audio>
 
 <script>
@@ -231,7 +231,7 @@ const song = document.getElementById("song"), toggle = document.getElementById("
 document.getElementById("openBtn").addEventListener("click", () => {
   document.getElementById("cover").classList.add("gone");
   song.volume = 0.8;
-  song.play().then(() => { toggle.hidden = false; }).catch(() => { toggle.hidden = false; toggle.textContent = "Play our song"; });
+  song.play().then(() => { toggle.hidden = false; }).catch(() => { toggle.hidden = false; toggle.textContent = "Play the song"; });
 });
 toggle.addEventListener("click", () => {
   if (song.paused) { song.play(); toggle.textContent = "Pause our song"; }
