@@ -86,7 +86,17 @@ main.after{padding-top:70px}
 .b3{right:3%;background:#5fb98a;animation-delay:.4s}
 .b4{right:10%;bottom:14cqw;background:#8fb8ff;animation-delay:1.2s}
 @keyframes bob{50%{transform:translateY(-1.2cqw)}}
-  
+/* places gallery */
+.gal{position:relative;z-index:2;padding:50px 0 20px}
+.gal h2{text-align:center;margin-bottom:18px}
+.galbox{position:relative;background:#000;border-top:1px solid rgba(255,217,138,.3);border-bottom:1px solid rgba(255,217,138,.3);padding:22px 0}
+.track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:0 8vw;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.slide{position:relative;flex:0 0 min(78vw,520px);aspect-ratio:4/3;scroll-snap-align:center;background:#0a0a0a;border:1px solid rgba(255,217,138,.35);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#555;font-family:Caveat,cursive;font-size:1.6rem}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gbtn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,217,138,.6);background:rgba(11,22,51,.85);color:var(--snow);font-size:1.4rem;cursor:pointer}
+.gbtn.prev{left:10px}
+.gbtn.next{right:10px}
 /* envelope */
 .envwrap{position:relative;z-index:2;text-align:center;padding:0 0 4vh;display:flex;flex-direction:column;align-items:center}
 .tb:nth-child(3){min-height:auto;padding-top:2vh}
@@ -161,7 +171,14 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
   <p class="envhint" id="envHint">Tap the envelope</p>
   <button class="closebtn" id="closeEnv" type="button" hidden>Close letter</button>
 </section>
-  
+<section class="gal">
+  <h2 style="text-align:center">Places we'll visit</h2>
+  <div class="galbox">
+    <button class="gbtn prev" id="gPrev" type="button" aria-label="Previous">&#8249;</button>
+    <div class="track" id="track"></div>
+    <button class="gbtn next" id="gNext" type="button" aria-label="Next">&#8250;</button>
+  </div>
+</section>
 <main class="after">
   <section>
     <h2>Our little story</h2>
@@ -311,6 +328,19 @@ env.addEventListener("click", () => {
 closeEnv.addEventListener("click", () => {
   env.classList.remove("open"); envHint.textContent = "Tap the envelope"; closeEnv.hidden = true;
 });
+
+// places gallery
+const track = document.getElementById("track");
+for (let i = 1; i <= 12; i++) {
+  const s = document.createElement("div"); s.className = "slide";
+  s.textContent = "pic" + i;
+  const im = document.createElement("img"); im.src = "pic" + i + ".jpg"; im.alt = "";
+  im.onerror = () => im.remove();
+  s.append(im); track.append(s);
+}
+const step = () => track.querySelector(".slide").offsetWidth + 16;
+document.getElementById("gNext").addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+document.getElementById("gPrev").addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
   
 // snow
 const cv = document.getElementById("snow"), cx = cv.getContext("2d");
