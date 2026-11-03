@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A little gift for you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0b1633; --deep:#142450; --glow:#ffd98a; --red:#e0485b; --green:#5fb98a; --snow:#f4f8ff; --mist:#b9c6e6;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh; color:var(--snow);
+  font-family:"Cormorant Garamond",Georgia,serif; font-size:1.25rem; line-height:1.65;
+  background:radial-gradient(ellipse at 50% -10%,#24397a 0%,var(--deep) 40%,var(--night) 100%) fixed;
+  overflow-x:hidden;
+}
+#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+/* string lights */
+.lights{position:fixed;top:0;left:0;right:0;height:46px;z-index:5;display:flex;justify-content:space-around;pointer-events:none}
+.lights::before{content:"";position:absolute;left:-2%;right:-2%;top:-14px;height:34px;border-bottom:2px solid #2d3b66;border-radius:0 0 50% 50%}
+.lights i{position:relative;top:14px;width:11px;height:15px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;animation:tw 2.8s ease-in-out infinite}
+.lights i:nth-child(4n+1){background:var(--red);box-shadow:0 0 14px 4px rgba(224,72,91,.55)}
+.lights i:nth-child(4n+2){background:var(--glow);box-shadow:0 0 14px 4px rgba(255,217,138,.55);animation-delay:.7s}
+.lights i:nth-child(4n+3){background:var(--green);box-shadow:0 0 14px 4px rgba(95,185,138,.5);animation-delay:1.4s}
+.lights i:nth-child(4n){background:#8fb8ff;box-shadow:0 0 14px 4px rgba(143,184,255,.5);animation-delay:2.1s}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.4}}
+
+main{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:96px 24px 120px}
+h1,h2{font-family:Caveat,"Segoe Script","Bradley Hand",cursive;font-weight:700;line-height:1.05}
+
+/* cover */
+#cover{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 30%,#1c2f68 0%,var(--night) 75%);transition:opacity 1.2s ease,visibility 1.2s}
+#cover.gone{opacity:0;visibility:hidden}
+#cover p{font-family:Caveat,cursive;font-size:2.4rem;color:var(--mist)}
+#openBtn{font-family:Caveat,cursive;font-size:2rem;font-weight:700;color:var(--night);background:var(--glow);border:0;border-radius:999px;padding:14px 38px;cursor:pointer;box-shadow:0 0 30px rgba(255,217,138,.55);animation:pulse 2.4s ease-in-out infinite}
+#openBtn:focus-visible,#toggle:focus-visible{outline:3px solid #fff;outline-offset:4px}
+@keyframes pulse{50%{box-shadow:0 0 52px rgba(255,217,138,.85)}}
+
+/* hero */
+.hero{text-align:center;padding:40px 0 70px}
+.hero h1{font-size:clamp(3.4rem,13vw,5.6rem);color:var(--glow);text-shadow:0 0 28px rgba(255,217,138,.35)}
+.hero .name{font-family:Caveat,cursive;font-size:clamp(2.4rem,9vw,3.6rem);margin-top:6px}
+.hero .sub{color:var(--mist);margin-top:14px;font-style:italic}
+
+/* moments */
+h2{font-size:2.6rem;color:var(--glow);margin-bottom:26px}
+.timeline{position:relative;padding-left:34px;margin-bottom:76px}
+.timeline::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--red),var(--green))}
+.moment{position:relative;margin-bottom:34px}
+.moment::before{content:"";position:absolute;left:-34px;top:9px;width:20px;height:20px;border-radius:50%;background:var(--night);border:3px solid var(--glow);box-shadow:0 0 12px rgba(255,217,138,.6)}
+.moment h3{font-family:Caveat,cursive;font-size:1.9rem;color:var(--snow);line-height:1.2}
+.moment p{color:var(--mist)}
+
+/* letter */
+.letter{background:rgba(244,248,255,.07);border:1px solid rgba(185,198,230,.25);border-radius:6px;padding:34px 28px;backdrop-filter:blur(3px)}
+.letter p{white-space:pre-line}
+.sig{font-family:Caveat,cursive;font-size:2.2rem;color:var(--glow);margin-top:22px;text-align:right}
+
+/* song control */
+#toggle{position:fixed;right:16px;bottom:16px;z-index:10;font-family:Caveat,cursive;font-size:1.4rem;color:var(--snow);background:rgba(11,22,51,.85);border:1px solid rgba(255,217,138,.5);border-radius:999px;padding:8px 20px;cursor:pointer}
+footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
+
+@media (prefers-reduced-motion:reduce){.lights i,#openBtn{animation:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+<div class="lights" id="lights" aria-hidden="true"></div>
+
+<div id="cover">
+  <p id="coverLine"></p>
+  <button id="openBtn" type="button">Tap to open your gift</button>
+</div>
+
+<main>
+  <section class="hero">
+    <h1>Happy Birthday</h1>
+    <div class="name" id="name"></div>
+    <div class="sub">Wrapped in snow, sent with all my love</div>
+  </section>
+
+  <section>
+    <h2>Our little story</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section>
+    <h2>For you</h2>
+    <div class="letter">
+      <p id="message"></p>
+      <div class="sig" id="from"></div>
+    </div>
+  </section>
+
+  <footer>Last Christmas is still playing, just for you.</footer>
+</main>
+
+<button id="toggle" type="button" hidden>Pause our song</button>
+<audio id="song" src="last-christmas.mp3" loop preload="auto"></audio>
+
+<script>
+/* ============ EDIT THIS PART ============
+   Change the text between the quotes. Keep the quotes and commas. */
+const GIFT = {
+  name: "His Name",
+  from: "Your Name",
+  coverLine: "Something small, made just for you",
+  moments: [
+    { title: "The day we met",   text: "Write a line or two about how it all started." },
+    { title: "Our first call",   text: "Write what you remember about it." },
+    { title: "My favourite memory", text: "Write the moment that still makes you smile." }
+  ],
+  message: "Happy birthday, my love.\n\nWrite your message to him here. Say what he means to you, what you miss, and what you are looking forward to doing together.\n\nOne day the distance will be gone.",
+};
+/* ============ END OF EDIT PART ============ */
+
+// fill page
+document.getElementById("name").textContent = GIFT.name;
+document.getElementById("from").textContent = "Yours, " + GIFT.from;
+document.getElementById("message").textContent = GIFT.message;
+document.getElementById("coverLine").textContent = GIFT.coverLine;
+const tl = document.getElementById("timeline");
+GIFT.moments.forEach(m => {
+  const d = document.createElement("div"); d.className = "moment";
+  const h = document.createElement("h3"); h.textContent = m.title;
+  const p = document.createElement("p"); p.textContent = m.text;
+  d.append(h, p); tl.append(d);
+});
+
+// string lights
+const L = document.getElementById("lights");
+for (let i = 0; i < 18; i++) L.appendChild(document.createElement("i"));
+
+// song + cover
+const song = document.getElementById("song"), toggle = document.getElementById("toggle");
+document.getElementById("openBtn").addEventListener("click", () => {
+  document.getElementById("cover").classList.add("gone");
+  song.volume = 0.8;
+  song.play().then(() => { toggle.hidden = false; }).catch(() => { toggle.hidden = false; toggle.textContent = "Play our song"; });
+});
+toggle.addEventListener("click", () => {
+  if (song.paused) { song.play(); toggle.textContent = "Pause our song"; }
+  else { song.pause(); toggle.textContent = "Play our song"; }
+});
+
+// snow
+const cv = document.getElementById("snow"), cx = cv.getContext("2d");
+let W, H, flakes = [];
+function size() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+addEventListener("resize", size); size();
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+for (let i = 0; i < (W < 600 ? 70 : 130); i++)
+  flakes.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 2.6 + .8, v: Math.random() * .9 + .35, s: Math.random() * Math.PI * 2 });
+function draw() {
+  cx.clearRect(0, 0, W, H); cx.fillStyle = "rgba(255,255,255,.85)";
+  for (const f of flakes) {
+    f.y += f.v; f.s += .01; f.x += Math.sin(f.s) * .4;
+    if (f.y > H + 5) { f.y = -5; f.x = Math.random() * W; }
+    cx.beginPath(); cx.arc(f.x, f.y, f.r, 0, 6.283); cx.fill();
+  }
+  if (!still) requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
