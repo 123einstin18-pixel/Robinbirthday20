@@ -49,6 +49,19 @@ h1,h2{font-family:Caveat,"Segoe Script","Bradley Hand",cursive;font-weight:700;l
 .hero .name{font-family:Caveat,cursive;font-size:clamp(2.4rem,9vw,3.6rem);margin-top:6px}
 .hero .sub{color:var(--mist);margin-top:14px;font-style:italic}
 
+/* photo that shrinks to the left while text scrolls on the right */
+.story{position:relative;z-index:2}
+.stage{position:sticky;top:0;height:100vh;z-index:3;pointer-events:none}
+.photo{position:absolute;top:50%;transform:translateY(-50%);aspect-ratio:5/4;background:#000;border:1px solid rgba(255,217,138,.35);box-shadow:0 0 40px rgba(0,0,0,.7),0 0 24px rgba(255,217,138,.12);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#555;font-family:Caveat,cursive;font-size:1.6rem}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.texts{width:50%;margin-left:50%;padding:25vh 6vw 30vh 4vw}
+.tb{min-height:70vh;display:flex;flex-direction:column;justify-content:center}
+.tb h3{font-family:Caveat,cursive;font-size:2.4rem;color:var(--glow);line-height:1.15;margin-bottom:10px}
+.tb p{color:var(--mist)}
+@media (max-width:700px){.tb h3{font-size:1.8rem}.tb p{font-size:1.05rem;line-height:1.5}}
+main.top{padding-bottom:20px}
+main.after{padding-top:70px}
+
 /* moments */
 h2{font-size:2.6rem;color:var(--glow);margin-bottom:26px}
 .timeline{position:relative;padding-left:34px;margin-bottom:76px}
@@ -80,13 +93,20 @@ footer{text-align:center;margin-top:70px;color:var(--mist);font-style:italic}
   <button id="openBtn" type="button">Tap to open your gift</button>
 </div>
 
-<main>
+<main class="top">
   <section class="hero">
     <h1>Happy Birthday</h1>
     <div class="name" id="name"></div>
     <div class="sub">Wrapped in snow, sent with all my love</div>
   </section>
+</main>
 
+<section class="story" id="story">
+  <div class="stage"><div class="photo" id="photo">your photo here</div></div>
+  <div class="texts" id="texts"></div>
+</section>
+
+<main class="after">
   <section>
     <h2>Our little story</h2>
     <div class="timeline" id="timeline"></div>
@@ -113,6 +133,12 @@ const GIFT = {
   name: "His Name",
   from: "Your Name",
   coverLine: "Something small, made just for you",
+  photo: "",  // after uploading a picture to GitHub, put its file name here, like "photo.jpg"
+  story: [
+    { title: "Write a heading here", text: "Write a few lines here. This text scrolls on the right while your photo stays on the left." },
+    { title: "Another heading", text: "Write something else you want him to read. Placeholder text for now." },
+    { title: "One last heading", text: "A final few lines before the photo scrolls away." }
+  ],
   moments: [
     { title: "The day we met",   text: "Write a line or two about how it all started." },
     { title: "Our first call",   text: "Write what you remember about it." },
@@ -150,6 +176,25 @@ toggle.addEventListener("click", () => {
   if (song.paused) { song.play(); toggle.textContent = "Pause our song"; }
   else { song.pause(); toggle.textContent = "Play our song"; }
 });
+
+// photo + story text
+const ph = document.getElementById("photo"), story = document.getElementById("story");
+if (GIFT.photo) { const im = document.createElement("img"); im.src = GIFT.photo; im.alt = ""; ph.textContent = ""; ph.append(im); }
+GIFT.story.forEach(m => {
+  const d = document.createElement("div"); d.className = "tb";
+  const h = document.createElement("h3"); h.textContent = m.title;
+  const p = document.createElement("p"); p.textContent = m.text;
+  d.append(h, p); document.getElementById("texts").append(d);
+});
+function layout() {
+  const vw = innerWidth, vh = innerHeight, r = story.getBoundingClientRect();
+  let t = Math.min(1, Math.max(0, -r.top / (vh * .85)));
+  t = t * t * (3 - 2 * t);
+  const w0 = Math.min(vw * .82, vh * .8 * 1.25), w1 = vw * .44, l0 = (vw - w0) / 2, l1 = vw * .04;
+  ph.style.width = (w0 + (w1 - w0) * t) + "px";
+  ph.style.left = (l0 + (l1 - l0) * t) + "px";
+}
+addEventListener("scroll", layout, { passive: true }); addEventListener("resize", layout); layout();
 
 // snow
 const cv = document.getElementById("snow"), cx = cv.getContext("2d");
