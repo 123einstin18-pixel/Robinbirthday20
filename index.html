@@ -59,11 +59,12 @@ h1,h2{font-family:Caveat,"Segoe Script","Bradley Hand",cursive;font-weight:700;l
 .tb h3{font-family:Caveat,cursive;font-size:2.4rem;color:var(--glow);line-height:1.15;margin-bottom:10px}
 .tb p{color:var(--mist)}
 @media (max-width:700px){.tb h3{font-size:1.8rem}.tb p{font-size:1.05rem;line-height:1.5}}
+.tb:nth-child(1){min-height:auto;padding-bottom:6vh}
 main.top{padding-bottom:20px}
 main.after{padding-top:70px}
 
 /* envelope */
-.envwrap{position:relative;z-index:2;text-align:center;min-height:90vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.envwrap{position:relative;z-index:2;text-align:center;padding:0 0 18vh;display:flex;flex-direction:column;align-items:center}
 .env{position:relative;width:100%;max-width:380px;aspect-ratio:7/5;margin:0 auto;cursor:pointer;perspective:1000px}
 .env-back{position:absolute;inset:0;background:#a82c40;border-radius:6px;box-shadow:0 14px 40px rgba(0,0,0,.55)}
 .env-letter{position:absolute;left:6%;right:6%;top:6%;height:88%;z-index:2;background:#fbf7ee;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#2b2b2b;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,.3);transition:transform .9s ease .45s;pointer-events:none}
